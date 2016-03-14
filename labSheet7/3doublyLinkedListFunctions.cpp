@@ -5,16 +5,17 @@ using namespace std;
 struct Node {
 	int data;
 	Node *next;
+	Node *previous;
 };
 
-class LinkedList {
+class DoublyLinkedList {
 	
 	Node *newNode, *temp, *temp2, *head;
 	int noOfNodes;
 	
 public:
 	
-	LinkedList() {
+	DoublyLinkedList() {
 		head = NULL;
 		noOfNodes = 0;
 	}
@@ -31,15 +32,23 @@ public:
 	void insertAtHead(int val) {
 		newNode = new Node;
 		newNode->data = val;
-		newNode->next = head;
-		head = newNode;
+		newNode->next = NULL;
+		newNode->previous = NULL;
+		if(head == NULL)
+			head = newNode;
+		else {
+			newNode->next  = head;
+			head->previous = newNode;
+			head = newNode;
+		}
 		noOfNodes++;
 	}
 	
-	void insertAtEnd(int val) {
+	void insertAtTail(int val) {
 		newNode = new Node;
 		newNode->data = val;
 		newNode->next = NULL;
+		newNode->previous = NULL;
 		if(head == NULL) 
 			head = newNode;
 		else {
@@ -47,6 +56,7 @@ public:
 			while(temp->next != NULL)
 				temp = temp->next;
 			temp->next = newNode;
+			newNode->previous = temp;
 		}
 		noOfNodes++;
 	}
@@ -54,65 +64,55 @@ public:
 	void insertAtK(int val, int k) {
 		newNode = new Node;
 		newNode->data = val;
+		newNode->next = NULL;
+		newNode->previous = NULL; 
 		temp = head;
 		for(int i=0; i<k-1 ;++i)
 			temp = temp->next;
 		newNode->next = temp->next;
+		temp->next->previous = newNode;
 		temp->next = newNode;
 		noOfNodes++;
 	}
 	
-	int deleteAtK(int k) {
-		int ele;
+	void deleteAtK(int k) {
 		if(head!=NULL) {
 			temp = head;
 			if(k==1) {
 				temp2 = head;
-				ele = temp->data;
 				head = temp->next;
+				head->previous = NULL;
 			}
 			else {
 				for(int i=1;i<k-1;++i)
 					temp = temp->next;
 				temp2 = temp->next;
-				ele = temp2->data;
 				temp->next = temp2->next;
+				temp2->next->previous = temp;
 			}
 			delete temp2;
 			noOfNodes--;
 		}
 		else 
 			cout << "No elements in List " << endl;
-		return ele;
+		
 	}
 	
 	int count() {
 		return noOfNodes;
 	}
-	
-	Node *getHead() {
-		return head;
-	}
 };
 
 
 int main() {
-	LinkedList l, even, odd;
-	for(int i = 1; i < 21; ++i)
-		l.insertAtEnd(i);
-	l.display();
-	Node *temp = l.getHead();
-	for(int i = 1; temp!=NULL;++i) {
-		if(i % 2 == 0)
-			even.insertAtEnd(temp->data);
-		else 
-			odd.insertAtEnd(temp->data);
-		temp = temp->next;
-	}
-	
-	cout << "The odd place list is : ";
-	odd.display();
-	cout << "The even place list is : ";
-	even.display();
+	DoublyLinkedList L;
+	L.insertAtHead(5);
+	L.display();
+	L.insertAtTail(1);
+	L.display();
+	L.insertAtK(10,1);
+	L.display();
+	L.deleteAtK(1);
+	L.display();
 	return 0;
 }

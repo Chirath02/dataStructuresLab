@@ -76,7 +76,7 @@ public:
 				temp->next = temp2->next;
 			}
 			delete temp2;
-			noOfNodes++;
+			noOfNodes--;
 		}
 		else 
 			cout << "No elements in List " << endl;
